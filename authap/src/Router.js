@@ -4,6 +4,7 @@ import { StyleSheet, StatusBar } from 'react-native';
 import Check from './components/Check';
 import Register from './components/Register';
 import Home from './components/Home';
+import Profile from './components/Profile'
 
 
 const RouterComponent = () => {
@@ -16,6 +17,7 @@ const RouterComponent = () => {
           navigationBarStyle={style.navBarStyle}
           titleStyle={style.titleStyle}
         >
+          
           <Scene
             title="Register"
             key="register"
@@ -26,8 +28,7 @@ const RouterComponent = () => {
             title="Check"
             key="check"
             component={Check}
-          />
-          
+          /> 
         </Stack>
         <Stack
           key="main"
@@ -40,6 +41,11 @@ const RouterComponent = () => {
             key="home"
             component={Home}
             initial
+          />
+          <Scene
+            title="Profile"
+            key="profile"
+            component={Profile}
           />
         </Stack>
       </Stack>

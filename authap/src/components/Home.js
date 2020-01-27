@@ -17,6 +17,9 @@ class Home extends Component {
         })
       .catch(error =>  console.log(error));
   }
+  ToProfile(){
+    Actions.profile()
+  }
 
   render() {
     const { buttonContainerStyle } = styles;
@@ -25,6 +28,7 @@ class Home extends Component {
         <Text style={{fontSize:27}}>
           Registration done
         </Text>
+        <Button title="Profile" onPress={this.ToProfile.bind(this)}/>
         <Button title="Logout" onPress={this.handleRequest.bind(this)}/>
       </View>
     );
