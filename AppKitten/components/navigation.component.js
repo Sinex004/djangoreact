@@ -1,0 +1,71 @@
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { HomeScreen } from './home.component';
+import { DetailsScreen } from './details.component';
+import {RegistrationScreen} from './registration.component';
+import {CodeScreen} from './code.component';
+import {MainScreen} from './main.component';
+import {ProfileScreen} from './profile.component';
+import { SafeAreaView } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {Icon, BottomNavigation, BottomNavigationTab, Layout, Text } from '@ui-kitten/components';
+
+
+const Stack = createStackNavigator();
+
+const HomeNavigator = () => (
+  <Stack.Navigator headerMode='none'>
+    <Stack.Screen name='Home' component={HomeScreen}/>
+    <Stack.Screen name='Details' component={DetailsScreen}/>
+    <Stack.Screen name='Registration' component={RegistrationScreen}/>
+    <Stack.Screen name='Code' component={CodeScreen}/>
+    <Stack.Screen name='Main' component={TabNavigator}/>
+
+  </Stack.Navigator>
+);
+
+const BottomTab = createBottomTabNavigator();
+
+const ProfileIcon = (style) => (
+  <Icon {...style} name='person-outline'/>
+);
+
+const RatingIcon = (style) => (
+  <Icon {...style} name='award-outline'/>
+);
+
+const MainIcon = (style) => (
+  <Icon {...style} name='play-circle-outline'/>
+);
+
+const TabNavigator = () => (
+  <BottomTab.Navigator tabBar={props => <BottomTabBar {...props} />}>
+    <BottomTab.Screen name='Start' component={MainScreen}/>
+    <BottomTab.Screen name='Rating' component={ProfileScreen}/>
+    <BottomTab.Screen name='Profile' component={ProfileScreen}/>
+  </BottomTab.Navigator>
+);
+const BottomTabBar = ({ navigation, state }) => {
+
+  const onSelect = (index) => {
+    navigation.navigate(state.routeNames[index]);
+  };
+
+  return (
+    <SafeAreaView>
+      <BottomNavigation selectedIndex={state.index} onSelect={onSelect}>
+        <BottomNavigationTab icon={MainIcon} title='Играть'/>
+        <BottomNavigationTab icon={RatingIcon} title='Рейтинг'/>
+        <BottomNavigationTab icon={ProfileIcon} title='Профиль'/>
+      </BottomNavigation>
+    </SafeAreaView>
+  );
+};
+
+
+export const AppNavigator = () => (
+  <NavigationContainer>
+    <HomeNavigator/>
+  </NavigationContainer>
+);

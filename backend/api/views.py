@@ -41,9 +41,9 @@ class SendMessage(APIView):
         print(request.data)
         cod = str(random.randint(100000,1000000))
         global codes
-        codes[request.data['phone']] = cod
+        codes[request.data['username']] = cod
         print(cod)
-        r = smsc.send_sms("7" + request.data['phone'],cod, sender="sms")
+        r = smsc.send_sms("7" + request.data['username'],cod, sender="sms")
         return Response(status=status.HTTP_200_OK)
 
 class CheckMessage(APIView):
@@ -51,7 +51,7 @@ class CheckMessage(APIView):
 
     def post(self, request, *args, **kwargs):
         global codes
-        if codes[request.data['phone']] == request.data['code']:
+        if codes[request.data['username']] == request.data['cod']:
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_417_EXPECTATION_FAILED)
