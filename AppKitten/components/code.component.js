@@ -18,29 +18,44 @@ export const CodeScreen = ({navigation}) =>{
     const onChangeCheck = () => {
         if(code.length == 6){
             const payload = {username: ls.get('phone'), cod: code}
+            console.log(payload.username)
             axios
-                .post(`/auth/check/`, payload)
-                .then(response => {
-                    const payload2 = {username:payload.username, password: ls.get('password')};                    
-                    axios
-                        .post(`/auth/register/`, payload2)
+                .post('/auth/check/', payload)
+                .then(response => {  
+                  console.log("check succeeeeees")       
+                  axios
+                    .post('/auth/login/', payload)
+                    .then(response => {
+                        const { token, user } = response.data;
+                        console.log('login succeeeeeeeeeees')
+                        // We set the returned token as the default authorization header
+                        axios.defaults.headers.common.Authorization = `Token ${token}`;
+                        // axios.defaults.headers.common.user = user;
+                        // Navigate to the home screen
+                        navigateMain();
+                    })
+                    .catch(error2 => {
+                      console.log('whyyyyyyyyyyyyyyy')
+                      console.log(error2)
+                      console.log('login faileeeeeeeeeeeeeeeeeeeeeeeeeeeeed')
+                      axios
+                        .post(`/auth/register/`, payload)
                         .then(response => {
-                            const { token, user } = response.data;
-                
-                            // We set the returned token as the default authorization header
-                            axios.defaults.headers.common.Authorization = `Token ${token}`;
-                            // axios.defaults.headers.common.user = user;
-                            // Navigate to the home screen
-                            navigateMain();
+                          const { token, user } = response.data;
+                  
+                          // We set the returned token as the default authorization header
+                          axios.defaults.headers.common.Authorization = `Token ${token}`;
+                          // axios.defaults.headers.common.user = user;
+                          // Navigate to the home screen
+                          navigateMain();
                         })
-                        .catch(error => {
-                            console.log(error);
-                            console.log('error when register');
-                            navigateRegister();
-                        })
+                        .catch(error3 => {
+                          console.log(error3)
+                        });
+                      });
                 })
-                .catch(error => {
-                    console.log(error);
+                .catch(error1 => {
+                    console.log(error1);
                     console.log('error when check');
 
                 });

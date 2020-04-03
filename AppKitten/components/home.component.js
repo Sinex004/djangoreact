@@ -2,10 +2,11 @@ import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { ApplicationProvider,IconRegistry, Icon, Input, Button, Divider, Layout, TopNavigation } from '@ui-kitten/components';
 import axios from 'axios';
+import ls from'local-storage';
 
 export const HomeScreen = ({ navigation }) => {
 
-  const [value, setValue] = React.useState('');
+  // const [value, setValue] = React.useState('');
   const [secureTextEntry, setSecureTextEntry] = React.useState(true);
   const [phone, setPhone] = React.useState('');
   // const []
@@ -13,9 +14,9 @@ export const HomeScreen = ({ navigation }) => {
     <Icon {...style} name='log-in'/>
   );
 
-  const RegisterIcon = (style) => (
-    <Icon {...style} name='person-add-outline'/>
-    );
+  // const RegisterIcon = (style) => (
+  //   <Icon {...style} name='person-add-outline'/>
+  //   );
   const onIconPress = () =>{
     setSecureTextEntry(!secureTextEntry);
   };
@@ -25,27 +26,27 @@ export const HomeScreen = ({ navigation }) => {
     name={!secureTextEntry ? 'eye': 'eye-off'}
     />
   );
-
+  const navigateCode = () => {
+    navigation.navigate('Code');
+  };
   const navigateDetails = () => {
-    console.log(value)
     console.log(phone)
     navigation.navigate('Details');
   };
   const loginAction = () => {
-    const payload = { username: phone, password: value } 
+    const payload = { username: phone} 
     axios
-      .post(`/auth/login/`, payload)
+      .post(`/auth/send/`, payload)
       .then(response => {
-        const { token, user } = response.data;
-
-        // We set the returned token as the default authorization header
-        axios.defaults.headers.common.Authorization = `Token ${token}`;
-        axios.defaults.headers.common.user = user;
-        // Navigate to the home screen
-        navigateMain();
+        ls.set('phone', phone);
+       
+        navigateCode();
       })
-      .catch(error => console.log(error));
-  }
+      .catch(error => {
+        console.log(error);
+      });
+
+  };
   const navigateRegister = () =>{
     navigation.navigate('Registration')
   }
@@ -67,17 +68,18 @@ export const HomeScreen = ({ navigation }) => {
         maxLength = {10}//7785568094
         textContentType='telephoneNumber'
         />
-        <Input
+        {/* <Input
           placeholder='Пароль'
           value={value}
           secureTextEntry={secureTextEntry}
           onChangeText={setValue}
           icon={renderIcon}
           onIconPress={onIconPress}
-        />
+        /> */}
         <Layout style={styles.rowlayout}>
           <Button style={styles.button} icon={LoginIcon} onPress={loginAction} >Войти</Button>
-          <Button style={styles.button} icon={RegisterIcon} onPress={navigateRegister}>Регистрация</Button>
+          {/* <Button style={styles.button} icon={RegisterIcon} onPress={navigateRegister}>Регистрация</Button> */}
+          <Button onPress= {navigateMain}></Button>
         </Layout>
       </Layout>
     </SafeAreaView>
