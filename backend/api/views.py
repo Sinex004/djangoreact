@@ -6,9 +6,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.views import APIView
-from api.serializers import CreateUserSerializer
+from rest_framework.renderers import JSONRenderer
+from api.serializers import CreateUserSerializer, SubjectSerializer
 from .smsc_api import *
 import random
+from .models import Subject, Question
 
 codes = {}
 class CreateUserAPIView(CreateAPIView):
@@ -55,4 +57,36 @@ class CheckMessage(APIView):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_417_EXPECTATION_FAILED)
+        
+class GetQuestions(APIView):
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+    def post(self,request, *args, **kwargs):
+        print(request.data)
+        questions = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:10].values()
+        # random_questions = random.sample(questions, 5)
+        print('Длина questions ===== ' + str(len(questions)))
+        print(questions[0])
+        return Response(questions, status=status.HTTP_200_OK)
+
+
+# class SubjectCreate(CreateAPIView):
+#     serializer_class = CreateSubjectSerializer
+#     permission_classes = [AllowAny]
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_create(serializer)
+#         headers = self.get_success_headers(serializer.data)
+#         return Response({**serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
+        
+
+class GetSubjects(APIView):
+    permission_classes = [AllowAny]
+    # serializer_class = SubjectSerializer
+    def get(self, request):
+        subjects = Subject.objects.all().values()
+        print('Длина subjects ===== ' + str(len(subjects)))
+        print(subjects[0])
+        return Response(subjects, status=status.HTTP_200_OK)
         

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from .models import Subject
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -15,3 +16,18 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+# class CreateSubjectSerializer(serializers.ModelSerializer):
+#     subject_name=serializers.CharField()
+#     class Meta:
+#         model = Subject
+#         fields = ('subject_name',)
+#     def create(self, validated_data):
+#         subject = Subject.objects.create(**validated_data)
+#         subject.save()
+#         return subject
+
+class SubjectSerializer(serializers.ModelSerializer):
+    subject_name=serializers.CharField(max_length=30)
+    class Meta:
+        model = Subject
+        fields = ('subject_name',)

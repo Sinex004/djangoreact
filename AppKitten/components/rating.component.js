@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet} from 'react-native';
-import {Icon, List, ListItem, BottomNavigation, BottomNavigationTab,Button, Layout, Text } from '@ui-kitten/components';
+import {Divider, Icon, List, ListItem, BottomNavigation, BottomNavigationTab,Button, Layout, Text } from '@ui-kitten/components';
 
 const dataa = new Array(8).fill({
     title: 'Title for Item',
@@ -32,6 +32,7 @@ export const RatingScreen = () => {
                 <Icon style={{marginTop:3,marginRight:10}} name='star-outline' width={33} height={33} fill='black' />
                 <Text category='h2'>Рейтинг</Text>
             </Layout>
+            <Divider/>
             <List style={styles.list}
             data={dataa}
             renderItem={renderList}

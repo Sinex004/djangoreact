@@ -4,7 +4,7 @@ import { Avatar, ApplicationProvider, Icon, Text, Input, Button, Divider, Layout
 import axios from 'axios';
 import ls from'local-storage';
 
-export const MainScreen = () =>{
+export const MainScreen = ({navigation}) =>{
 
   const MainIcon = (style) => (
     <Icon {...style} name='play-circle-outline'/>
@@ -13,16 +13,29 @@ export const MainScreen = () =>{
   const BattleIcon = (style) => (
     <Icon {...style} name='people-outline'/>
   );
-  
+  const navigateSubjects = () =>{
+    axios
+      .get('/GetSubjects/')
+      .then(response =>{
+        navigation.navigate('Subjects',response.data)
+      })
+      .catch(error=>{
+        console.log(error)
+      })    
+
+  }
+
   return(
+    <SafeAreaView style={{flex:1}}>
     <Layout style={styles.layoutMain}>
         {/* <Avatar size='giant' style={styles.avatar} shape='rounded' source={require('../assets/logo.png')}/> */}
         <Image style={styles.avatar} source = {require('../assets/logo.png')} />
         <Layout style={styles.collayout}>
-          <Button size='large' style={styles.button} icon={MainIcon}>Старт</Button>
-          <Button size='large' style={styles.button} disabled={true} icon={BattleIcon}>Дуэль</Button>
+          <Button size='large' style={styles.button} onPress={navigateSubjects} icon={MainIcon}>Быстрый тест</Button>
+          <Button size='large' style={styles.button} disabled={true} icon={BattleIcon}>Соревнование</Button>
         </Layout>
     </Layout>
+    </SafeAreaView>
   );
 
 

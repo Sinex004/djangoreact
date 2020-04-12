@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import { ApplicationProvider, Icon, Text, Input, Button, Divider, Layout, TopNavigation, IconRegistry } from '@ui-kitten/components';
 import axios from 'axios';
 import ls from'local-storage';
@@ -47,7 +47,10 @@ export const CodeScreen = ({navigation}) =>{
                           axios.defaults.headers.common.Authorization = `Token ${token}`;
                           // axios.defaults.headers.common.user = user;
                           // Navigate to the home screen
-                          navigateMain();
+                          navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Main' }],
+                          });
                         })
                         .catch(error3 => {
                           console.log(error3)
@@ -64,10 +67,18 @@ export const CodeScreen = ({navigation}) =>{
 
     return(
         <SafeAreaView style={{flex:1}}>
-            <TopNavigation title='Регистрация' alignment='center' style={styles.topNav}/>
-            <Divider/>
-            <Layout style={styles.layoutMain}>
-                <Text category='s2'>Мы отправили смс с кодом на ваш телефон, введите его:</Text>
+            {/* <TopNavigation title='Регистрация' alignment='center' style={styles.topNav}/> */}
+            {/* <Divider/> */}
+          <Layout level="3" style={styles.layoutMain}>
+            <Layout level='3' style={{flex:1}}>
+
+            </Layout>
+
+            <Layout style={styles.layoutMain2}>
+              <Text category='h5' status='info' style={{fontSize:20, margin:8}}>Подтверждение</Text>
+              <Divider style={{alignSelf:'stretch', borderWidth:0.5,marginBottom:10}} />
+                
+                <Text category='s1'>Мы отправили смс с кодом на ваш телефон, введите его:</Text>
                 <Input
                     placeholder='Код'
                     value={code}
@@ -76,14 +87,21 @@ export const CodeScreen = ({navigation}) =>{
                     autoCapitalize="none"
                     maxLength = {6}//7785568094
                     textContentType='telephoneNumber'
-                    style={{marginTop:10, marginBottom:10}}
+                    style={{marginTop:20, marginBottom:10}}
                 />
                 <Button style={styles.button} onPress={onChangeCheck} >Подтвердить</Button>
 
             </Layout>
+            <Layout level='3' style={{flex:2}}>
+
+            </Layout>
+          </Layout>
         </SafeAreaView>
     );
 }
+var deviceWidth = Dimensions.get("window").width;
+var deviceHeight = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
   button: {
     margin: 8,
@@ -95,12 +113,20 @@ const styles = StyleSheet.create({
 
   },
   layoutMain:{
-    paddingTop:20,
+    // paddingTop:20,
     padding: 8,
     flex: 1,
     // justifyContent:'center',
     alignItems:'center',
     flexDirection:'column',
+  },
+  layoutMain2:{
+    flex:2,
+    flexDirection:'column',
+    width:deviceWidth*85/100,
+    padding:10,
+    alignItems:'center',
+    borderRadius:10
   },
   rowlayout:{
     flexDirection:'row',

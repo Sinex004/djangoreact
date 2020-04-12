@@ -168,7 +168,7 @@ import {baseURL} from './config'
 import axios from 'axios'
 
 export default class App extends Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     axios.defaults.baseURL = baseURL;
     axios.defaults.timeout = 2000;
   }

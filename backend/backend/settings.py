@@ -26,6 +26,7 @@ SECRET_KEY = 'nje4_-o5z1^ta6hcejjtmo1%x7aq)(rw_fm)k*x88^(y5=(+6m'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+# AUTH_PROFILE_MODULE = 'models.UserProfile'
 
 
 # Application definition
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'api'
 ]
 
 REST_FRAMEWORK = {
