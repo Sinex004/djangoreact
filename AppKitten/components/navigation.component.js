@@ -10,9 +10,11 @@ import {ProfileScreen} from './profile.component';
 import {RatingScreen} from './rating.component';
 import {SubjectsScreen} from './subjects.component'
 import {QuestionsScreen} from './questions.component';
+import {LogoutScreen} from './logout.component';
 import { SafeAreaView } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {Icon, BottomNavigation, BottomNavigationTab, Layout, Text } from '@ui-kitten/components';
+import axios from 'axios';
 
 
 const Stack = createStackNavigator();
@@ -49,12 +51,13 @@ const LogoutIcon = (style) => (
   <Icon {...style} name='log-out-outline'/>
 );
 
+
 const TabNavigator = () => (
   <BottomTab.Navigator tabBar={props => <BottomTabBar {...props} />}>
     <BottomTab.Screen name='Start' component={MainScreen}/>
     <BottomTab.Screen name='Rating' component={RatingScreen}/>
     <BottomTab.Screen name='Profile' component={ProfileScreen}/>
-    {/* <BottomTab.Screen name='Logout' component={QuestionsScreen}/> */}
+    <BottomTab.Screen name='Logout' component={LogoutScreen}/>
   </BottomTab.Navigator>
 );
 const BottomTabBar = ({ navigation, state }) => {

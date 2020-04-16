@@ -96,7 +96,7 @@ export const HomeScreen = ({ navigation }) => {
             <Layout style={styles.rowlayout}>
               <Button style={styles.button} icon={LoginIcon} onPress={loginAction} >Отправить</Button>
               {/* <Button style={styles.button} icon={RegisterIcon} onPress={navigateRegister}>Регистрация</Button> */}
-              <Button onPress= {navigateMain}></Button>
+              {/* <Button onPress= {navigateMain}></Button> */}
             </Layout>
           </Layout>
           <Layout level='3' style={{flex:2}}>

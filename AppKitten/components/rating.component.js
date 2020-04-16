@@ -1,6 +1,7 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet} from 'react-native';
 import {Divider, Icon, List, ListItem, BottomNavigation, BottomNavigationTab,Button, Layout, Text } from '@ui-kitten/components';
+import axios from 'axios';
 
 const dataa = new Array(8).fill({
     title: 'Title for Item',
@@ -17,6 +18,16 @@ export const RatingScreen = () => {
         <Icon {...style} name='person'/>
     );
     
+    const ratingList = () =>{
+      axios
+        .get("GetRating/")
+        .then(response =>{
+
+        })
+        .catch(error =>{
+          console.log(error);
+        });
+    }
     const renderList = ({ item, index }) => (
         <ListItem
             title={`${item.title} ${index + 1}`}

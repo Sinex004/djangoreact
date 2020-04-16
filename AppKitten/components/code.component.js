@@ -7,17 +7,14 @@ import ls from'local-storage';
 export const CodeScreen = ({navigation}) =>{
     const [code, setCode] = React.useState('');
     
-    const navigateMain = () => {
-        navigation.navigate('Main');
-      };
 
     const navigateRegister = () =>{
         navigation.navigate('Registration')
       };
 
     const onChangeCheck = () => {
-        if(code.length == 6){
-            const payload = {username: ls.get('phone'), cod: code}
+        if(code.length == 4){
+            const payload = {username: ls.get('phone'),password:'sinex', cod: code}
             console.log(payload.username)
             axios
                 .post('/auth/check/', payload)
@@ -32,7 +29,10 @@ export const CodeScreen = ({navigation}) =>{
                         axios.defaults.headers.common.Authorization = `Token ${token}`;
                         // axios.defaults.headers.common.user = user;
                         // Navigate to the home screen
-                        navigateMain();
+                        navigation.reset({
+                          index: 0,
+                          routes: [{ name: 'Main' }],
+                        })
                     })
                     .catch(error2 => {
                       console.log('whyyyyyyyyyyyyyyy')

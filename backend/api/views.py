@@ -7,10 +7,13 @@ from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
-from api.serializers import CreateUserSerializer, SubjectSerializer
+from api.serializers import CreateUserSerializer, SubjectSerializer, ProfileSerializer
 from .smsc_api import *
 import random
-from .models import Subject, Question
+from .models import Subject, Question, Profile
+from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
+
 
 codes = {}
 class CreateUserAPIView(CreateAPIView):
@@ -41,11 +44,11 @@ class SendMessage(APIView):
     def post(self, request,  *args, **kwargs):
         smsc = SMSC()
         print(request.data)
-        cod = str(random.randint(100000,1000000))
+        cod = str(random.randint(1000,10000))
         global codes
         codes[request.data['username']] = cod
         print(cod)
-        r = smsc.send_sms("7" + request.data['username'],cod, sender="sms")
+        r = smsc.send_sms("7" + request.data['username'],cod,sender="EntFun")
         return Response(status=status.HTTP_200_OK)
 
 class CheckMessage(APIView):
@@ -59,8 +62,8 @@ class CheckMessage(APIView):
             return Response(status=status.HTTP_417_EXPECTATION_FAILED)
         
 class GetQuestions(APIView):
-    # permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
     def post(self,request, *args, **kwargs):
         print(request.data)
         questions = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:10].values()
@@ -82,11 +85,33 @@ class GetQuestions(APIView):
         
 
 class GetSubjects(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
     # serializer_class = SubjectSerializer
     def get(self, request):
         subjects = Subject.objects.all().values()
         print('Длина subjects ===== ' + str(len(subjects)))
         print(subjects[0])
         return Response(subjects, status=status.HTTP_200_OK)
+
+class GetRating(APIView):
+    permission_classes = [IsAuthenticated]
+    # serializer_class = ProfileSerializer
+
+    def get(self,request):
+        users = User.objects.select_related('profile').all()
+        print(users)
+        rating = []
+        for user in users:
+            rating.append(user.profile)
+        return Response(rating, status=status.HTTP_200_OK)
+    def post(self, request):
+    
+        print(request.data['username'])
+        user = User.objects.get(username=request.data['username'])
+        rating =model_to_dict(Profile.objects.get(user=user))        
+        print(rating)
+        return Response(rating, status=status.HTTP_200_OK)
+        
+
         
