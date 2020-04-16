@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
-from api.serializers import CreateUserSerializer, SubjectSerializer, ProfileSerializer
+from api.serializers import CreateUserSerializer, SubjectSerializer
 from .smsc_api import *
 import random
 from .models import Subject, Question, Profile
