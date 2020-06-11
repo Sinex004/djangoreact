@@ -22,7 +22,7 @@ export const SubjectsScreen = ({route, navigation }) => {
         .post('/GetQuestions30/',payload )
         .then(response =>{
           
-          navigation.navigate('Questions',response.data)
+          navigation.navigate('Questions',{questions:response.data})
         })
         .catch(error=>{
           console.log(error)

@@ -7,16 +7,15 @@ import moment from "moment";
 
 
 
-export class QuestionsScreen extends React.Component {
+export class BattleScreen extends React.Component {
   state={
     questions:null,
     header:1,
     sIndex:0,
-    rating:0,
     checked:false,
     result:0,
     submitButton:{status:'primary'},
-    eventDate:moment.duration().add({minutes:10,seconds:0}), // add 9 full days, 3 hours, 40 minutes and 50 seconds
+    eventDate:moment.duration().add({minutes:5,seconds:0}), // add 9 full days, 3 hours, 40 minutes and 50 seconds
     mins:0,
     secs:0,
   };
@@ -28,31 +27,30 @@ export class QuestionsScreen extends React.Component {
   updateTimer=()=>{
     
     const x = setInterval(()=>{
-      let { eventDate} = this.state
+        let { eventDate} = this.state
 
-      if(eventDate <=0){
-        
-        clearInterval(x)
-      }else {
-        eventDate = eventDate.subtract(5,"s")
-        const mins = eventDate.minutes()
-        const secs = eventDate.seconds()
-        if (eventDate<=15){
-          let submitButton = {status:'warning'}
-          this.setState({
-            submitButton,
-            mins,
-            secs,
-            eventDate
-          })
-        }else{
-          this.setState({
-            mins,
-            secs,
-            eventDate
-          })
+        if(eventDate <=0){
+            clearInterval(x)
+        }else {
+            eventDate = eventDate.subtract(5,"s")
+            const mins = eventDate.minutes()
+            const secs = eventDate.seconds()
+            if (eventDate<=15){
+                let submitButton = {status:'warning'}
+                this.setState({
+                    submitButton,
+                    mins,
+                    secs,
+                    eventDate
+                })
+            }else{
+                this.setState({
+                    mins,
+                    secs,
+                    eventDate
+                })
+            }
         }
-      }
     },5000)
 
   }
@@ -191,11 +189,11 @@ export class QuestionsScreen extends React.Component {
 
   closeHandle = () => {
     this.props.navigation.navigate('Main');
-  }
+  };
 
   submitHandle = () => {
     
-    let result=0;
+    var result=0;
     for (let i = 0; i<this.state.questions.length;i++){
       if(this.state.questions[i].correct==true){
         result = result + 1;
@@ -204,17 +202,17 @@ export class QuestionsScreen extends React.Component {
         this.state.questions[i].variantsStyleWrong[this.state.questions[i].userAnswer]={appearance:"filled", status:'danger'}
       }
     };
-    let rating = 2 * result - 10 ;
-    this.setState({result:result, checked:true, rating:rating})
-    // console.log(this.state.questions);
+    this.setState({result:result, checked:true})
+    const  payload = {username: ls.get('phone'), battleId: this.props.route.params.battleId, Answers: this.state.questions, Result: result};
     axios
-      .post("GetRating/", {username: ls.get('phone'), rating:rating})
+      .post("GetResultBattle/", payload)
       .then(response =>{
       console.log(response.data)
       })
       .catch(error =>{
       console.log(error);
       });
+    // console.log(this.state.questions);
     this.selectPage(10);
    
     // this.props.navigation.navigate('Main')

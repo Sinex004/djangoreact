@@ -10,7 +10,7 @@ from rest_framework.renderers import JSONRenderer
 from api.serializers import CreateUserSerializer, SubjectSerializer
 from .smsc_api import *
 import random
-from .models import Subject, Question, Profile
+from .models import Subject, Question, Profile, Battle
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 
@@ -99,19 +99,93 @@ class GetRating(APIView):
     # serializer_class = ProfileSerializer
 
     def get(self,request):
-        users = User.objects.select_related('profile').all()
+        users = Profile.objects.select_related('user').all()
+        # ratings = Profile.objects.all()
         print(users)
+        temp = User.objects.select_related('profile').all()
         rating = []
-        for user in users:
-            rating.append(user.profile)
+        for use in users:
+            if(use.user.username=='prove'):
+                continue
+            print(use.user.username)
+            rating.append({"username": use.user.username,"rating":use.rating})
         return Response(rating, status=status.HTTP_200_OK)
-    def post(self, request):
-    
-        print(request.data['username'])
-        user = User.objects.get(username=request.data['username'])
-        rating =model_to_dict(Profile.objects.get(user=user))        
-        print(rating)
-        return Response(rating, status=status.HTTP_200_OK)
-        
 
+    def post(self, request):
+        print(request.data['username'])
+        user = User.objects.select_related('profile').get(username=request.data['username'])
+        if('rating' in request.data):
+            user.profile.rating= user.profile.rating + request.data['rating']
+            user.save()
+            return Response(model_to_dict(user.profile), status=status.HTTP_200_OK)
+        else:
+            return Response(model_to_dict(user.profile), status=status.HTTP_200_OK)
+    
+class GetBattle(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self,request):
+        user = User.objects.get(username=request.data['username'])
+        print(user)
+        battles = Battle.objects.filter(started=0)
+        if(len(battles)>0):
+            battle = battles[0]
+            battle.user2 = user
+            battle.started = -1
+            battle.save()
+            print(model_to_dict(battle))
+            result = {'battleId':battle.id, 'stat':'second'}
+            return Response(result, status=status.HTTP_200_OK)
+        else:
+            battle = Battle.objects.create(user1= user )
+            print(model_to_dict(battle))
+            result = {'battleId':battle.id, 'stat':'first'}
+            return Response(result, status=status.HTTP_200_OK)
+
+# class GetOpponent(APIView):
+#     permission_classes = [IsAuthenticated]
+#     def post(self, request):
+#         battle = Battle.objects.get(id= request.data['battleId'])
+#         if battle.started == -1:
+#             return Response( status=status.HTTP_200_OK)
+            
+
+class GetQuestionsForBattle(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        battle = Battle.objects.get(id= request.data['battleId'])
+        questions = []
+        if battle.started == -1:
+            battle = Battle.objects.get(id=request.data['battleId'])
+            print('this')
+            print(battle.questions)
+            if len(battle.questions) ==0:
+                print('if')
+                questions = Question.objects.filter(subject_id=3).order_by('?')[:10].values()
+                print(questions)
+                
+                battle.questions = {'questions':list(questions)}
+                battle.save()
+            else:
+                print('else')
+                questions = battle.questions['questions'] #if questions is filled. mean that opponent is ready
+            return Response(questions, status=status.HTTP_200_OK)
+        else: #if questions is empty.mean that opponent not ready
+            return Response(questions, status=status.HTTP_200_OK)
+
+
+class GetResult(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        battle = Battle.objects.get(id=request.data['battleId'])
+        user = User.objects.get(username=request.data['username'])
+        if battle.user1 == user.id:
+            battle.user1Answers = request.data['Answers']
+            battle.user1Result = request.data['Result']
+        else:
+            battle.user2Answers = request.data['Answers']
+            battle.user2Result = request.data['Result']
+        battle.save()
+        return Response(model_to_dict(battle), status=status.HTTP_200_OK)
         

@@ -10,17 +10,17 @@ import {ProfileScreen} from './profile.component';
 import {RatingScreen} from './rating.component';
 import {SubjectsScreen} from './subjects.component'
 import {QuestionsScreen} from './questions.component';
+import {BattleScreen} from './battle.component';
 import {LogoutScreen} from './logout.component';
 import { SafeAreaView } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {Icon, BottomNavigation, BottomNavigationTab, Layout, Text } from '@ui-kitten/components';
-import axios from 'axios';
+import {Icon, BottomNavigation, BottomNavigationTab} from '@ui-kitten/components';
 
 
 const Stack = createStackNavigator();
 
 const HomeNavigator = () => (
-  <Stack.Navigator headerMode='none'>
+  <Stack.Navigator headerMode='none' initialRouteName="Home">
     <Stack.Screen name='Home' component={HomeScreen}/>
     {/* <Stack.Screen name='Details' component={DetailsScreen}/> */}
     {/* <Stack.Screen name='Registration' component={RegistrationScreen}/> */}
@@ -28,6 +28,7 @@ const HomeNavigator = () => (
     <Stack.Screen name='Main' component={TabNavigator}/>
     <Stack.Screen name='Subjects' component={SubjectsScreen}/>
     <Stack.Screen name='Questions' component={QuestionsScreen}/>
+    <Stack.Screen name='Battle' component={BattleScreen}/>
 
   </Stack.Navigator>
 );

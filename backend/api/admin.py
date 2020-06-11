@@ -1,8 +1,10 @@
 from django.contrib import admin
-from .models import Subject, Question, Profile
+from .models import Subject, Question, Profile, Battle
 # Register your models here.
 admin.site.register(Subject)
 admin.site.register(Question)
+admin.site.register(Battle)
+
 
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -38,3 +39,16 @@ class Question(models.Model):
     var3 = models.CharField(max_length=200)
     def __str__(self):
         return self.question
+
+class Battle(models.Model):
+    user1 = models.ForeignKey(User , null=True, related_name='user1', on_delete=models.SET_NULL)
+    user2 = models.ForeignKey(User , null=True, blank=True, related_name='user2', on_delete=models.SET_NULL)
+    started = models.IntegerField(default=0)
+    questions = JSONField( blank=True,default= dict)
+    user1Answers = JSONField( blank=True,default= dict)
+    user2Answers = JSONField( blank=True,default= dict)
+    user1Result = models.IntegerField( blank=True, null=True)
+    user2Result = models.IntegerField( blank=True, null=True)
+
+    def __str__(self):
+        return str(self.id)
