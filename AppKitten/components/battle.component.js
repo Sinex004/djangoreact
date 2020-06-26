@@ -13,9 +13,8 @@ export class BattleScreen extends React.Component {
     header:1,
     sIndex:0,
     checked:false,
-    result:0,
     submitButton:{status:'primary'},
-    eventDate:moment.duration().add({minutes:5,seconds:0}), // add 9 full days, 3 hours, 40 minutes and 50 seconds
+    eventDate:moment.duration().add({minutes:1,seconds:0}), // add 9 full days, 3 hours, 40 minutes and 50 seconds
     mins:0,
     secs:0,
   };
@@ -27,7 +26,7 @@ export class BattleScreen extends React.Component {
   updateTimer=()=>{
     
     const x = setInterval(()=>{
-        let { eventDate} = this.state
+       let { eventDate} = this.state
 
         if(eventDate <=0){
             clearInterval(x)
@@ -56,11 +55,13 @@ export class BattleScreen extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    // if(this.state.started){
-      var shuffle = require('shuffle-array');
-      const questions = this.props.route.params.questions;  
+    
+    var shuffle = require('shuffle-array');
+    const questions = this.props.route.params.questions;
+      console.log(questions)
       for (let i = 0; i<questions.length;i++){
         questions[i]['userAnswer']= null;
+        questions[i]['correct'] = false;
         questions[i]['variants'] = shuffle([questions[i].answer, questions[i].var1, questions[i].var2, questions[i].var3]);
         questions[i]['correctIndex'] = questions[i].variants.indexOf(questions[i].answer);
         questions[i]['variantsStyleCorrect']= [{appearance:"outline", status:'primary'},
@@ -74,14 +75,8 @@ export class BattleScreen extends React.Component {
         {appearance:"outline", status:'primary'}];
         questions[i]['variantsStyleWrong'][questions[i]['correctIndex']] = {appearance:"filled", status:'success'}
       }
-      // started = false;
-      // this.setState({started:false});
+      console.log(questions)
       this.setState({questions:questions});
-      console.log(questions);
-
-    // }else{
-    //   console.log("elseeeeee")
-    // };
   };
   // const [questions, setQuestions]= React.useState(start());
   // const [header, setHeader] = React.useState(1);
@@ -177,7 +172,7 @@ export class BattleScreen extends React.Component {
     }
   };
   nextPage = () => {
-    if(this.state.header<11){
+    if(this.state.header<5){
       this.setState({header:this.state.header+1, sIndex:this.state.sIndex + 1});
     }
   };
@@ -192,22 +187,25 @@ export class BattleScreen extends React.Component {
   };
 
   submitHandle = () => {
-    
-    var result=0;
+    var score=0
+    var round='';
     for (let i = 0; i<this.state.questions.length;i++){
       if(this.state.questions[i].correct==true){
-        result = result + 1;
+        round= round + '1';
+        score++;
       }
       else{
         this.state.questions[i].variantsStyleWrong[this.state.questions[i].userAnswer]={appearance:"filled", status:'danger'}
+        round= round + '0';
       }
     };
-    this.setState({result:result, checked:true})
-    const  payload = {username: ls.get('phone'), battleId: this.props.route.params.battleId, Answers: this.state.questions, Result: result};
+    this.setState({round:round, checked:true})
+    ls.set('battleId',this.props.route.params.battleId)
+    const  payload = {username: ls.get('phone'), battleId: this.props.route.params.battleId, round: round,score:score};
     axios
       .post("GetResultBattle/", payload)
       .then(response =>{
-      console.log(response.data)
+        console.log(response.data)
       })
       .catch(error =>{
       console.log(error);
@@ -223,7 +221,7 @@ export class BattleScreen extends React.Component {
       <SafeAreaView style={{flex:1}}>
         <Layout style={styles.head}>
           <Button size='tiny' onPress={this.prevPage} appearance='ghost' icon={this.renderLeftIcon}></Button>
-          <Text category='h5'>{this.state.header<11?"Вопрос "+this.state.header+"/10":"Результат"}</Text>
+          <Text category='h5'>{this.state.header<5?"Вопрос "+this.state.header+"/4":"Результат"}</Text>
           <Button size='tiny' onPress={this.nextPage} appearance='ghost' icon={this.renderRightIcon}></Button>
         </Layout>
         <ViewPager style={{flex:13}}
@@ -238,8 +236,8 @@ export class BattleScreen extends React.Component {
           <Layout level='1' style={{flex:4, alignItems:'center'}}> 
           { this.state.questions.map((item, key)=>(
             item.correct?
-          <Text category='p1' key={key} status='success' >{ key+1 } Правильно</Text>:
-          <Text category='p1' key={key} status='danger' >{ key+1 } Неправильно</Text>)
+          <Text category='p1' key={key}  status='success' >{ key+1 } Правильно</Text>:
+          <Text category='p1' key={key}  status='danger' >{ key+1 } Неправильно</Text>)
          )}    
           </Layout>
         </Layout>
@@ -250,8 +248,8 @@ export class BattleScreen extends React.Component {
           <Layout level='3' style={{flex:4, alignItems:'center'}}> 
           { this.state.questions.map((item, key)=>(
             item.userAnswer==null?
-          <Text key={key} status='warning' >{ key+1 } Не отвечено</Text>:
-          <Text key={key} status='primary' >{ key+1 } Отвечено</Text>)
+          <Text key={key} status='warning'  >{ key+1 } Не отвечено</Text>:
+          <Text key={key} status='primary'  >{ key+1 } Отвечено</Text>)
          )}    
           </Layout>
         </Layout>
@@ -261,7 +259,7 @@ export class BattleScreen extends React.Component {
         {this.state.checked?
           <Button style={{marginHorizontal:20}} size='large' onPress={this.closeHandle} icon={this.renderCloseIcon}  >Закрыть Тест</Button>
         :
-          <Button style={{marginHorizontal:20}} {...this.state.submitButton} size='large' onPress={this.submitHandle} icon={this.renderSubmitIcon}  >{`${mins} : ${secs}`}</Button>
+          <Button style={{marginHorizontal:20}} {...this.state.submitButton} size='large' onPress={this.submitHandle} icon={this.renderSubmitIcon} >{`${mins} : ${secs}`}</Button>
         }
         </Layout>
       </SafeAreaView>

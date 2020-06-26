@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './home.component';
-import { DetailsScreen } from './details.component';
+import { DetailsScreen} from './details.component';
 // import {RegistrationScreen} from './registration.component';
 import {CodeScreen} from './code.component';
 import {MainScreen} from './main.component';
@@ -12,6 +12,9 @@ import {SubjectsScreen} from './subjects.component'
 import {QuestionsScreen} from './questions.component';
 import {BattleScreen} from './battle.component';
 import {LogoutScreen} from './logout.component';
+import {ChooseScreen} from './choose.component';
+import {SubjectsforbattleScreen} from './subjectsforbattle.component'
+
 import { SafeAreaView } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {Icon, BottomNavigation, BottomNavigationTab} from '@ui-kitten/components';
@@ -25,10 +28,15 @@ const HomeNavigator = () => (
     {/* <Stack.Screen name='Details' component={DetailsScreen}/> */}
     {/* <Stack.Screen name='Registration' component={RegistrationScreen}/> */}
     <Stack.Screen name='Code' component={CodeScreen}/>
+    <Stack.Screen name='FirstEnter' component={DetailsScreen}/>
     <Stack.Screen name='Main' component={TabNavigator}/>
     <Stack.Screen name='Subjects' component={SubjectsScreen}/>
     <Stack.Screen name='Questions' component={QuestionsScreen}/>
     <Stack.Screen name='Battle' component={BattleScreen}/>
+    <Stack.Screen name='Choose' component={ChooseScreen}/>
+    <Stack.Screen name='BattleSubjects' component={SubjectsforbattleScreen}/>
+
+    
 
   </Stack.Navigator>
 );
@@ -72,7 +80,7 @@ const BottomTabBar = ({ navigation, state }) => {
       <BottomNavigation selectedIndex={state.index} onSelect={onSelect}>
         <BottomNavigationTab icon={MainIcon} title='Тесты'/>
         <BottomNavigationTab icon={RatingIcon} title='Рейтинг'/>
-        <BottomNavigationTab icon={ProfileIcon} title='Профиль'/>
+        <BottomNavigationTab icon={ProfileIcon} title='Батллы'/>
         <BottomNavigationTab icon={LogoutIcon} title='Выход'/>
       </BottomNavigation>
     </SafeAreaView>

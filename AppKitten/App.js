@@ -162,6 +162,7 @@
 import React, { Component } from 'react';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import * as eva from '@eva-design/eva';
 import { mapping, light as theme } from '@eva-design/eva';
 import { AppNavigator } from './components/navigation.component';
 import {baseURL} from './config'
@@ -177,7 +178,7 @@ export default class App extends Component {
     return(
     <React.Fragment>
     <IconRegistry icons={EvaIconsPack}/>
-    <ApplicationProvider mapping={mapping} theme={theme}>
+    <ApplicationProvider {...eva} mapping={mapping} theme={theme}>
       <AppNavigator/>
     </ApplicationProvider>
     </React.Fragment>

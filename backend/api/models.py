@@ -19,6 +19,8 @@ class Subject(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
+    city = models.TextField(blank=True, null=True)
+    school = models.TextField(blank=True, null=True)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -43,12 +45,25 @@ class Question(models.Model):
 class Battle(models.Model):
     user1 = models.ForeignKey(User , null=True, related_name='user1', on_delete=models.SET_NULL)
     user2 = models.ForeignKey(User , null=True, blank=True, related_name='user2', on_delete=models.SET_NULL)
-    started = models.IntegerField(default=0)
+    started = models.IntegerField(default=1)
+    
     questions = JSONField( blank=True,default= dict)
     user1Answers = JSONField( blank=True,default= dict)
     user2Answers = JSONField( blank=True,default= dict)
-    user1Result = models.IntegerField( blank=True, null=True)
-    user2Result = models.IntegerField( blank=True, null=True)
+    
+    user1Round1 = models.TextField( blank=True, null=True)
+    user2Round1 = models.TextField( blank=True, null=True)
+    user1Round2 = models.TextField( blank=True, null=True)
+    user2Round2 = models.TextField( blank=True, null=True)
+    user1Round3 = models.TextField( blank=True, null=True)
+    user2Round3 = models.TextField( blank=True, null=True)
+    user1Round4 = models.TextField( blank=True, null=True)
+    user2Round4 = models.TextField( blank=True, null=True)
 
+    user1Total = models.IntegerField( blank=True, null=True)
+    user2Total = models.IntegerField( blank=True, null=True)
+    
+    result =  models.IntegerField( blank=True, null=True)
+    
     def __str__(self):
         return str(self.id)

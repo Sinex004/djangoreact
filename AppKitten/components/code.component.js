@@ -47,10 +47,7 @@ export const CodeScreen = ({navigation}) =>{
                           axios.defaults.headers.common.Authorization = `Token ${token}`;
                           // axios.defaults.headers.common.user = user;
                           // Navigate to the home screen
-                          navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Main' }],
-                          });
+                          navigation.navigate('FirstEnter')
                         })
                         .catch(error3 => {
                           console.log(error3)

@@ -12,7 +12,7 @@ export const MainScreen = ({navigation}) =>{
   const MainIcon = (style) => (
     <Icon {...style} name='play-circle-outline'/>
   );
-  const [acceptStyle,setAcceptStyle] =React.useState({disabled:true, size:'tiny'})
+  // const [acceptStyle,setAcceptStyle] =React.useState({disabled:true, size:'tiny'})
   const BattleIcon = (style) => (
     <Icon {...style} name='people-outline'/>
   );
@@ -42,27 +42,36 @@ export const MainScreen = ({navigation}) =>{
   };
 
     
-  const Header = (props) => (
-    <View {...props}  style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center'}}>
-      <Layout >
-      <Text status='primary' category='h5'>Подождите</Text>
-      {/* <Divider/> */}
-      <Text status='primary' category='s1'>подбираем противника...</Text>
-      </Layout>
-      <Spinner style={{padding:0}} size='large'/>
-    </View>
-  );
+  // const Header = (props) => (
+  //   <View {...props}  style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center'}}>
+  //     <Layout >
+  //     <Text status='primary' category='h5'>Подождите</Text>
+  //     {/* <Divider/> */}
+  //     <Text status='primary' category='s1'>подбираем противника...</Text>
+  //     </Layout>
+  //     <Spinner style={{padding:0}} size='large'/>
+  //   </View>
+  // );
 
-  const closeWait = () => {
-    console.log(questions);
-    setVisible(false);
-    console.log(acceptStyle);
-  };
+  // const closeWait = () => {
+  //   console.log(questions);
+  //   setVisible(false);
+  //   clearInterval(interval);
+  //   // console.log(acceptStyle);
+  // };
   
-  const oppReady = (ques) =>{
-    setAcceptStyle({disabled:false, size:'tiny'});
-    setQuestions(ques);
-  };
+  // const oppReady = (ques) =>{
+  //   // setAcceptStyle({disabled:false, size:'tiny'});
+  //   console.log(ques)
+  //   setQuestions(ques['questions']);
+  //   setVisible(false);
+  //   navigation.navigate('Battle', {battleId:battleId, questions:questions})
+  //   console.log('ACCEPT');
+  // };
+
+  const navigateChoose = () => {
+    navigation.navigate('Choose')
+  }
 
   const openWait = () => {
     setVisible(true);
@@ -71,8 +80,8 @@ export const MainScreen = ({navigation}) =>{
       .post("GetBattle/", payload)
       .then(response => {
         console.log(response.data)
-        const payload2 = {'battleId': response.data.battleId, 'stat': response.data.stat}
         setBattleId(response.data.battleId);
+        const payload2 = {'battleId': response.data.battleId, 'stat': response.data.stat}
         const interval = setInterval(()=> {
           axios
             .post("GetQuestionsForBattle/", payload2)
@@ -85,7 +94,7 @@ export const MainScreen = ({navigation}) =>{
                 console.log(response2.data)
               // setQuestions(response.data);
                 oppReady(response2.data)
-                console.log('iiiiiiiiiiiiiffffffffffffff');
+
   
               }
             })
@@ -100,32 +109,32 @@ export const MainScreen = ({navigation}) =>{
       })
   };
 
-  const acceptBattle = () => {
-    setVisible(false);
-    navigation.navigate('Battle', {battleId:battleId, questions:questions})
-    console.log('ACCEPT');
+  // const acceptBattle = () => {
+  //   setVisible(false);
+  //   navigation.navigate('Battle', {battleId:battleId, questions:questions})
+  //   console.log('ACCEPT');
 
-  };
+  // };
 
-  const Footer = (props) => (
-    <View {...props} style={styles.footerContainer}>
-      <Button
-        style={styles.footerControl}
-        size='tiny'
-        status='basic'
-        onPress= {closeWait}
-        >
-        Отмена
-      </Button>
-      <Button
-        {...acceptStyle}
-        style={styles.footerControl}
-        onPress={acceptBattle}
-        >
-        Принять
-      </Button>
-    </View>
-  );
+  // const Footer = (props) => (
+  //   <View {...props} style={styles.footerContainer}>
+  //     <Button
+  //       style={styles.footerControl}
+  //       size='medium'
+  //       status='basic'
+  //       onPress= {closeWait}
+  //       >
+  //       Отмена
+  //     </Button>
+  //     {/* <Button
+  //       {...acceptStyle}
+  //       style={styles.footerControl}
+  //       onPress={acceptBattle}
+  //       >
+  //       Принять
+  //     </Button> */}
+  //   </View>
+  // );
 
   return(
     <SafeAreaView style={{flex:1}}>
@@ -135,9 +144,9 @@ export const MainScreen = ({navigation}) =>{
           
         <Layout style={styles.collayout}>
           <Button size='large' style={styles.button} onPress={navigateSubjects} icon={MainIcon}>Быстрый тест</Button>
-          <Button size='large' style={styles.button} onPress={openWait}  icon={BattleIcon}>Соревнование</Button>
+          <Button size='large' style={styles.button} onPress={navigateChoose}  icon={BattleIcon}>Соревнование</Button>
         </Layout>
-        <Modal
+        {/* <Modal
           visible={visible}
           backdropStyle={styles.backdrop}
           onBackdropPress={closeWait}
@@ -145,13 +154,13 @@ export const MainScreen = ({navigation}) =>{
           <Card disabled={true} footer={Footer} style={{padding:15}}>
             <Layout style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center'}}>
               <Layout >
-                <Text status='primary' category='h5'>Подождите</Text>
+                <Text status='primary' category='h5'></Text>
                 <Text status='primary' category='s1'>подбираем противника...</Text>
               </Layout>
               <Spinner style={{padding:0}} size='large'/>
             </Layout>
           </Card>
-        </Modal>
+        </Modal> */}
     </Layout>
     </SafeAreaView>
   );
@@ -178,7 +187,7 @@ const styles = StyleSheet.create({
   footerContainer: {
     flex:1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   footerControl: {
     marginHorizontal: 5,

@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'api',
-    'django.contrib.postgres'
+    'django.contrib.postgres',
 ]
 
 REST_FRAMEWORK = {
@@ -92,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'prove',
         'USER': 'postgres',
-        'PASSWORD': '123',
+        'PASSWORD': 'sinex',
         'HOST': 'localhost',
         'PORT': '',
     }
