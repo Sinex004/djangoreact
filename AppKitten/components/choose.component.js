@@ -1,5 +1,5 @@
 import React from 'react';
-import {  TouchableOpacity,SafeAreaView, View, StyleSheet } from 'react-native';
+import { Share, TouchableOpacity,SafeAreaView, View, StyleSheet } from 'react-native';
 import { Avatar, Icon, Text, TopNavigation, TopNavigationAction, BottomNavigation, BottomNavigationTab, Layout } from '@ui-kitten/components';
 import ls from'local-storage';
 import axios from 'axios';
@@ -10,7 +10,20 @@ export const ChooseScreen = ({route,navigation}) => {
     const BackIcon = (style) => (
         <Icon {...style} name='arrow-back-outline'/>
     );
-      
+    
+    const onShare = async () => {
+        try {
+          await Share.share({
+            title: 'React Native Share',
+            message:
+              'Let me share this text with other apps',
+          });
+    
+        } catch (error) {
+          console.log(error.message);
+        }
+      };
+
     const BackAction = () => (
         <TopNavigationAction icon={BackIcon} onPress={navigateBack} />
     );
@@ -18,14 +31,18 @@ export const ChooseScreen = ({route,navigation}) => {
         navigation.goBack();
     };
     
-    const TopNavigationStyling = () => (
-        <TopNavigation
-          title={evaProps => <Text {...evaProps}>Title</Text>}
-          subtitle={evaProps => <Text {...evaProps}>Subtitle</Text>}
-        />
-    );
 
-    const openWhatsapp = () =>{
+    const openWhatsapp = async () =>{
+        try {
+            await Share.share({
+              title: 'EntFun',
+              message:
+                'Let me share this text with other apps',
+            });
+      
+          } catch (error) {
+            console.log(error.message);
+          }
         console.log('Whats')
 
     }

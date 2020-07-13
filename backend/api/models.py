@@ -51,19 +51,19 @@ class Battle(models.Model):
     user1Answers = JSONField( blank=True,default= dict)
     user2Answers = JSONField( blank=True,default= dict)
     
-    user1Round1 = models.TextField( blank=True, null=True)
-    user2Round1 = models.TextField( blank=True, null=True)
-    user1Round2 = models.TextField( blank=True, null=True)
-    user2Round2 = models.TextField( blank=True, null=True)
-    user1Round3 = models.TextField( blank=True, null=True)
-    user2Round3 = models.TextField( blank=True, null=True)
-    user1Round4 = models.TextField( blank=True, null=True)
-    user2Round4 = models.TextField( blank=True, null=True)
+    user1Round1 = models.CharField(max_length=5, default='0', blank=True, null=True)
+    user2Round1 = models.CharField(max_length=5, default='0', blank=True, null=True)
+    user1Round2 = models.CharField(max_length=5, default='0', blank=True, null=True)
+    user2Round2 = models.CharField(max_length=5, default='0', blank=True, null=True)
+    user1Round3 = models.CharField(max_length=5, default='0', blank=True, null=True)
+    user2Round3 = models.CharField(max_length=5, default='0', blank=True, null=True)
+    user1Round4 = models.CharField(max_length=5, default='0', blank=True, null=True)
+    user2Round4 = models.CharField(max_length=5, default='0', blank=True, null=True)
 
-    user1Total = models.IntegerField( blank=True, null=True)
-    user2Total = models.IntegerField( blank=True, null=True)
+    user1Total = models.IntegerField(default=0, blank=True, null=True)
+    user2Total = models.IntegerField(default=0, blank=True, null=True)
     
-    result =  models.IntegerField( blank=True, null=True)
+    result =  models.CharField(max_length=15,default='0', blank=True, null=True)
     
     def __str__(self):
         return str(self.id)

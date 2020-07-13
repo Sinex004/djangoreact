@@ -48,7 +48,7 @@ export const RatingScreen = ({navigation}) => {
   }
   const renderList = ({ item, index }) => (
       <ListItem
-          title={`+7${item.username}`}
+          title={`${item.username}`}
           description={`Очки: ${item.rating}`}
           icon={renderItemIcon}
           accessory={renderItemAccessory}

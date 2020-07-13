@@ -6,7 +6,7 @@ import { DetailsScreen} from './details.component';
 // import {RegistrationScreen} from './registration.component';
 import {CodeScreen} from './code.component';
 import {MainScreen} from './main.component';
-import {ProfileScreen} from './profile.component';
+import {BattleInfoScreen} from './battleInfo.component';
 import {RatingScreen} from './rating.component';
 import {SubjectsScreen} from './subjects.component'
 import {QuestionsScreen} from './questions.component';
@@ -14,7 +14,7 @@ import {BattleScreen} from './battle.component';
 import {LogoutScreen} from './logout.component';
 import {ChooseScreen} from './choose.component';
 import {SubjectsforbattleScreen} from './subjectsforbattle.component'
-
+import {BattleListScreen} from './battlelist.component';
 import { SafeAreaView } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {Icon, BottomNavigation, BottomNavigationTab} from '@ui-kitten/components';
@@ -35,6 +35,7 @@ const HomeNavigator = () => (
     <Stack.Screen name='Battle' component={BattleScreen}/>
     <Stack.Screen name='Choose' component={ChooseScreen}/>
     <Stack.Screen name='BattleSubjects' component={SubjectsforbattleScreen}/>
+    <Stack.Screen name='BattleInfo' component={BattleInfoScreen}/>
 
     
 
@@ -65,7 +66,7 @@ const TabNavigator = () => (
   <BottomTab.Navigator tabBar={props => <BottomTabBar {...props} />}>
     <BottomTab.Screen name='Start' component={MainScreen}/>
     <BottomTab.Screen name='Rating' component={RatingScreen}/>
-    <BottomTab.Screen name='Profile' component={ProfileScreen}/>
+    <BottomTab.Screen name='BattleList' component={BattleListScreen}/>
     <BottomTab.Screen name='Logout' component={LogoutScreen}/>
   </BottomTab.Navigator>
 );

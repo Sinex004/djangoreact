@@ -92,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'prove',
         'USER': 'postgres',
-        'PASSWORD': '123',
+        'PASSWORD': 'sinex',
         'HOST': 'localhost',
         'PORT': '',
     }

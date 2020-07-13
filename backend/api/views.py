@@ -16,6 +16,7 @@ from django.forms.models import model_to_dict
 import datetime
 from django.contrib.auth.models import update_last_login
 from rest_framework.authtoken.views import ObtainAuthToken
+from django.db.models import Q
 
 class LoginToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
@@ -37,6 +38,7 @@ class CreateUserAPIView(CreateAPIView):
         headers = self.get_success_headers(serializer.data)
         token = Token.objects.create(user=serializer.instance)
         token_data = {"token": token.key}
+        update_last_login(None, token.user)
         return Response({**serializer.data, **token_data}, status=status.HTTP_201_CREATED, headers=headers)
 
 
@@ -126,16 +128,16 @@ class GetRating(APIView):
     # serializer_class = ProfileSerializer
 
     def get(self,request):
-        users = Profile.objects.select_related('user').all()
+        users = User.objects.select_related('profile').all()
         # ratings = Profile.objects.all()
         print(users)
-        temp = User.objects.select_related('profile').all()
+        # temp = User.objects.select_related('profile').all()
         rating = []
         for use in users:
-            if(use.user.username=='prove'):
+            if(use.username=='prove'):
                 continue
-            print(use.user.username)
-            rating.append({"username": use.user.username,"rating":use.rating})
+            print(use.username)
+            rating.append({"username": use.first_name,"rating":use.profile.rating})
         return Response(rating, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -165,8 +167,9 @@ class GetBattle(APIView):
         # else:
         today = datetime.date.today() + datetime.timedelta(days=1)
         last_day = datetime.date.today() - datetime.timedelta(days=1)
-        last_users=User.objects.filter(last_login__range=(last_day, today))
+        last_users=User.objects.filter(Q(last_login__range=(last_day, today)),~Q(username='prove'),~Q(username=request.data['username']))
         random_user = random.randint(0,len(last_users)-1)
+        print(last_users)
         battle = Battle.objects.create(user1= user, user2=last_users[random_user] )
         print(model_to_dict(battle))
         result = {'battleId':battle.id, 'stat':'first'}
@@ -186,7 +189,7 @@ class GetQuestionsForBattle(APIView):
     def post(self, request):
         battle = Battle.objects.get(id= request.data['battleId'])
         if battle.started == 1:
-            questions = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:4].values()
+            questions = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:3].values()
             battle.questions = {'questions_round_1':list(questions)}
             battle.started +=1
             battle.save()
@@ -201,7 +204,7 @@ class GetQuestionsForBattle(APIView):
         
 
         elif battle.started == 3:
-            questions = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:4].values()
+            questions = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:3].values()
             battle.questions['questions_round_2'] = list(questions)
             battle.started +=1
             battle.save()
@@ -216,7 +219,7 @@ class GetQuestionsForBattle(APIView):
 
 
         elif battle.started == 5:
-            questions = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:4].values()
+            questions = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:3].values()
             battle.questions['questions_round_3'] = list(questions)
             battle.started +=1
             battle.save()
@@ -231,7 +234,7 @@ class GetQuestionsForBattle(APIView):
 
 
         elif battle.started == 7:
-            questions = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:4].values()
+            questions = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:3].values()
             battle.questions['questions_round_4'] = list(questions)
             battle.started +=1
             battle.save()
@@ -245,18 +248,32 @@ class GetQuestionsForBattle(APIView):
             return Response(battle.questions['questions_round_4'], status=status.HTTP_200_OK)
         # return Response(battle.questions, status=status.HTTP_200_OK)
 class battle(APIView):
-    permission_classes= [IsAuthenticated]
+    permission_classes= [AllowAny]
     def post(self,request):
-        battle = Battle.objects.select_related('user').get(id=request.data['battleId'])
-        return Response(model_to_dict(battle), status=status.HTTP_200_OK)
+        user = User.objects.get(username=request.data['username'])
+        battles=Battle.objects.select_related('user1','user2').filter(Q(user1=user.id) |  Q(user2=user.id) ,~Q(started=10))
+        batte = []
+        for bat in battles:
+            batte.append({'battleId':bat.id,'result':bat.result, 'started':bat.started,'user1':bat.user1.first_name,'user2':bat.user2.first_name, 'total1':bat.user1Total, 'total2':bat.user2Total })
+            
+        return Response(batte, status=status.HTTP_200_OK)
         
+
+class searchBattle(APIView):
+    permission_classes=[AllowAny]
+    def post(self, request):
+        battle = Battle.objects.get(id=request.data['battleId'])
+        if str(battle.user1) ==request.data['phone']:
+            return Response({'battle':model_to_dict(battle),'users':{'name1':battle.user1.first_name, 'name2':battle.user2.first_name, 'you':1}}, status=status.HTTP_200_OK)
+        else:
+            return Response({'battle':model_to_dict(battle),'users':{'name1':battle.user1.first_name, 'name2':battle.user2.first_name, 'you':2}}, status=status.HTTP_200_OK)
 
 class GetResult(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
         battle = Battle.objects.get(id=request.data['battleId'])
         user = User.objects.get(username=request.data['username'])
-        if battle.user1 == user:
+        if str(battle.user1) == request.data['username']:
             print('first user in battle')
             if battle.started == 2 or battle.started == 3:
                 battle.user1Round1 = request.data['round']
@@ -291,7 +308,17 @@ class GetResult(APIView):
             elif battle.started == 8 or battle.started == 9:
                 battle.user2Round4 = request.data['round']
                 battle.user2Total = battle.user2Total + request.data['score']
+        if battle.started == 9:
+            if battle.user1Total > battle.user2Total:
+                battle.user1.profile.rating =battle.user1.profile.rating + 10
+                battle.result = battle.user1
+            elif battle.user1Total < battle.user2Total:
+                battle.result = battle.user2
+                battle.user2.profile.rating =battle.user2.profile.rating + 10
 
+            else:
+                battle.result = 11111
+            
         battle.save()
         return Response(model_to_dict(battle), status=status.HTTP_200_OK)
         
