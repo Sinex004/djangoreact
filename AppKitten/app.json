@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "EntFun",
+    "scheme": "entfun",
+    "slug": "AppKitten",
+    "privacy": "public",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.knn.entfun",
+      "buildNumber": "1.0.0",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.knn.entfun",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
+      "useNextNotificationsApi": true
+    },
+    "description": "Pushes",
+    "githubUrl": "https://github.com/Sinex004/djangoreact/tree/master/AppKitten"
+  }
+}
