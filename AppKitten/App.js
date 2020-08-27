@@ -163,7 +163,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import * as eva from '@eva-design/eva';
-import { mapping, light as theme } from '@eva-design/eva';
 import {SplashScreen} from './components/splash.component';
 import { AppNavigator } from './components/navigation.component';
 import {baseURL} from './config'
@@ -190,7 +189,11 @@ export default function App({navigation}) {
   const noInBattle = () => {
     ls.set('inBattle','no' )
   };
+  //https://exp-shell-app-assets.s3.us-west-1.amazonaws.com/android/%40sinex/AppKitten-f99035c6f5c94f75a7b9cc0f2bc2d15e-signed.apk
   
+
+  
+
   useEffect(() => {
     axios.defaults.baseURL = baseURL;
     axios.defaults.timeout = 2000;
@@ -269,7 +272,7 @@ export default function App({navigation}) {
   return(
     <React.Fragment>
     <IconRegistry icons={EvaIconsPack}/>
-    <ApplicationProvider {...eva} mapping={mapping} theme={theme}>
+    <ApplicationProvider {...eva} mapping={eva.mapping} theme={eva.light}>
     {/* <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <Text>Title: {notification && notification.request.content.title} </Text>
         <Text>Body: {notification && notification.request.content.body}</Text>

@@ -19,7 +19,31 @@ import {BattleListScreen} from './battlelist.component';
 import { SafeAreaView } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {Icon, BottomNavigation, BottomNavigationTab} from '@ui-kitten/components';
+// https://expo.io/artifacts/2085781a-f437-4c37-b736-7fb44f910798
+const linking = {
+  prefixes:['https://expo.io/artifacts/2085781a-f437-4c37-b736-7fb44f910798'],
+  config: {
+    screens: {
+      HomeNavigator:{
+        initialRouteName: 'Main',
+        screens:{
+          Main:'mainpath',
+          Accept:{
+            path: 'challenge/:enemy',
+            parse: {
+              enemy: parseInt(enemy),
+            },
+            stringify: {
+              enemy: enemy.toString(),
+            },
+          },
+          Home:'*',
+        }
+      }
+    },
 
+  },
+};
 
 const Stack = createStackNavigator();
 
@@ -92,7 +116,7 @@ const BottomTabBar = ({ navigation, state }) => {
 
 
 export const AppNavigator = () => (
-  <NavigationContainer>
+  <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
     <HomeNavigator/>
   </NavigationContainer>
 );

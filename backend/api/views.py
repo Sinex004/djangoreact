@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
-from api.serializers import CreateUserSerializer, SubjectSerializer
+from api.serializers import CreateUserSerializer
 from .smsc_api import *
 import random
 from .models import Subject, Question, Profile, Battle
@@ -261,7 +261,7 @@ class GetBattle(APIView):
             battle.save()
 
         result = {'battleId':battle.id, 'stat':'first', 'enemy': enemy.username}
-
+        send_push_message(token = enemy.profile.pushToken, message = user.first_name + " хочет сразиться" )
         return Response(result, status=status.HTTP_200_OK)
 
 class GetOpponent(APIView):
