@@ -47,6 +47,7 @@ class Battle(models.Model):
     user1 = models.ForeignKey(User , null=True, related_name='user1', on_delete=models.SET_NULL)
     user2 = models.ForeignKey(User , null=True, blank=True, related_name='user2', on_delete=models.SET_NULL)
     started = models.IntegerField(default=1)
+    accept = models.BooleanField(default=False)
     
     questions = JSONField( blank=True,default= dict)
     user1Answers = JSONField( blank=True,default= dict)

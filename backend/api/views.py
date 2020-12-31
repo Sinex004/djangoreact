@@ -166,6 +166,10 @@ class Profile(APIView):
 
     def post(self, request):
         user = User.objects.select_related('profile').get(username=request.data['username'])
+        return Response({'first_name': user.first_name, 'last_name':user.last_name, 'city':user.profile.city, 'school':user.profile.school,'rating':user.profile.rating}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        user = User.objects.select_related('profile').get(username=request.data['username'])
         user.profile.city = request.data['city']
         user.profile.school = request.data['school']
         user.first_name = request.data['name']
@@ -186,7 +190,7 @@ class SavePushToken(APIView):
 
 
 class SendPush(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         user = User.objects.select_related('profile').get(username=request.data['username'])
@@ -194,7 +198,7 @@ class SendPush(APIView):
         send_push_message(token = user2.profile.pushToken, message = user.first_name + " хочет сразиться" )
         return Response( status=status.HTTP_200_OK)
 
-
+# -----------------------------------------------------++++++++++++
 class ProfileGet(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -215,8 +219,7 @@ class GetRating(APIView):
         for use in users:
             if(use.username=='prove'):
                 continue
-            print(use.username)
-            rating.append({"username": use.first_name,"rating":use.profile.rating})
+            rating.append({"name": use.first_name,"rating":use.profile.rating, "number":use.username})
         return Response(rating, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -228,24 +231,14 @@ class GetRating(APIView):
             return Response(model_to_dict(user.profile), status=status.HTTP_200_OK)
         else:
             return Response(model_to_dict(user.profile), status=status.HTTP_200_OK)
-    
+# create a battle and invite enemy
 class GetBattle(APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self,request):
         user = User.objects.get(username=request.data['username'])
-        print(user)
-        # battles = Battle.objects.filter(started=0)
-        # if(len(battles)>0):
-        #     battle = battles[0]
-        #     battle.user2 = user
-        #     battle.save()
-        #     print(model_to_dict(battle))
-        #     result = {'battleId':battle.id, 'stat':'second'}
-        #     return Response(result, status=status.HTTP_200_OK)
-        # else:
         today = datetime.date.today() + datetime.timedelta(days=1)
-        last_hour = datetime.date.today() - datetime.timedelta(hours=1)
+        last_hour = datetime.date.today() - datetime.timedelta(minutes=30)
         last_users=User.objects.filter(Q(last_login__range=(last_hour, today)),~Q(username='prove'),~Q(username=request.data['username']))
         random_user = random.randint(0,len(last_users)-1)
         print(last_users)
@@ -253,27 +246,32 @@ class GetBattle(APIView):
         battle = Battle.objects.create(user1= user, user2=enemy )
         print(model_to_dict(battle))
         if request.data['choose'] == 'random':
-            questions1 = Question.objects.filter(subject_id=request.data['3']).order_by('?')[:3].values()
-            questions2 = Question.objects.filter(subject_id=request.data['3']).order_by('?')[:3].values()
-            questions3 = Question.objects.filter(subject_id=request.data['3']).order_by('?')[:3].values()
-            questions4 = Question.objects.filter(subject_id=request.data['3']).order_by('?')[:3].values()
+            questions1 = Question.objects.filter(subject_id=).order_by('?')[:3].values()
+            questions2 = Question.objects.filter(subject_id=3).order_by('?')[:3].values()
+            questions3 = Question.objects.filter(subject_id=3).order_by('?')[:3].values()
+            questions4 = Question.objects.filter(subject_id=3).order_by('?')[:3].values()
             battle.questions = {'questions_round_1':list(questions1), 'questions_round_2':list(questions2), 'questions_round_3':list(questions3), 'questions_round_4':list(questions4)}
             battle.save()
-
-        result = {'battleId':battle.id, 'stat':'first', 'enemy': enemy.username}
+        if request.data['choose'] == 'subject':
+            questions1 = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:3].values()
+            questions2 = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:3].values()
+            questions3 = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:3].values()
+            questions4 = Question.objects.filter(subject_id=request.data['subject_id']).order_by('?')[:3].values()
+            battle.questions = {'questions_round_1':list(questions1), 'questions_round_2':list(questions2), 'questions_round_3':list(questions3), 'questions_round_4':list(questions4)}
+            battle.save()
+        result = {'battleId':battle.id, 'enemy': enemy.username }
         send_push_message(token = enemy.profile.pushToken, message = user.first_name + " хочет сразиться" )
         return Response(result, status=status.HTTP_200_OK)
 
 class GetOpponent(APIView):
     permission_classes = [IsAuthenticated]
-
+# dodeat'
     def post(self, request):
         battle = Battle.objects.get(id= request.data['battleId'])
-        if battle.started == 1:
-            return Response({result:'yes'},status=status.HTTP_200_OK)
-        else:
-            battle.delete()
-            return Response({result:'no'},status=status.HTTP_200_OK)
+        
+        battle.accept = request.data['accept']
+        send_push_message(token = enemy.profile.pushToken, message , extra= )
+        return Response(status=status.HTTP_200_OK)
             
             
 

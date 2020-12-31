@@ -79,7 +79,9 @@ export const LogoutScreen = ({ navigation }) => {
       setVisible(true)
   }
   const sendPush = () =>{
-    const payload = {username:ls.get('phone'),enemy:'7785568094'}
+    // const payload = {username:ls.get('phone'),enemy:'7785568094'}
+    const payload = {username: '7785568094', enemy:'7785568094'}
+
     axios
       .post('/sendPush/', payload)
       .then(response =>{
@@ -89,6 +91,28 @@ export const LogoutScreen = ({ navigation }) => {
       });
   }
 
+  const sendFire = () => {
+    console.log('hhhhhhhh')
+    fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'key=AAAAgGihDA0:APA91bG3JbrBaTyfv0nSP-ALeIIUh9FXZ9Zzpc8dVotsyciAf_e6bbTRpjMi-2HO8wJZcUh9Q92Ue0ELudZNR1zSYXlN7qtRrMsJIFrTYtLoPw7L9x-bACxL2N9tT8Vd64Y0xd4CCi3S',
+      },
+      body: JSON.stringify({
+        to: expoPushToken,
+        notification: {
+          // experienceId: '@sinex/AppKitten',
+          title: "📧 You've got mail",
+          message: 'Hello world! 🌐',
+        },
+        // "direct_book_ok" : true,
+      }),
+}).then((response) => response.json())
+.then((data) => console.log('This is your data', data))
+console.log('yyyyyyyy')
+
+  }
   const LogoutIcon = (style) => (
     <Icon {...style} name='log-out-outline'/>
   );
@@ -163,8 +187,9 @@ export const LogoutScreen = ({ navigation }) => {
             </Button>
           </Card>
         </Modal>
-        <Button onPress={logout} icon={LogoutIcon}>Выйти</Button>
+        {/* <Button onPress={logout} icon={LogoutIcon}>Выйти</Button> */}
         <Button onPress={sendPush} icon={LogoutIcon}>Отправить пуш</Button>
+        <Button onPress={sendFire} icon={LogoutIcon}>Отправить fire</Button>
 
       </Layout>
     </SafeAreaView>
@@ -183,7 +208,7 @@ async function registerForPushNotificationsAsync() {
       alert('Failed to get push token for push notification!');
       return;
     }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
+    token = (await Notifications.getExpoPushTokenAsync()).data
     console.log(token);
   } else {
     alert('Must use physical device for Push Notifications');
