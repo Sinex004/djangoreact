@@ -39,7 +39,7 @@ grpcio==1.24.3
 gunicorn==19.9.0
 heroku==0.1.4
 httpie==1.0.3
-httplib2==0.14.0
+httplib2==0.19.0
 idna==2.8
 isort==4.3.18
 itsdangerous==1.1.0
