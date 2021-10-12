@@ -55,7 +55,7 @@ msgpack==0.6.2
 numpy==1.17.4
 oauth2==1.9.0.post1
 oauthlib==3.1.0
-opencv-python==4.1.2.30
+opencv-python==4.2.0.32
 pbr==5.4.4
 Pillow==6.2.1
 pipenv==2018.11.26
