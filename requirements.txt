@@ -52,7 +52,7 @@ mccabe==0.6.1
 Mezzanine==4.3.1
 mkdocs==1.0.4
 msgpack==0.6.2
-numpy==1.17.4
+numpy==1.22.0
 oauth2==1.9.0.post1
 oauthlib==3.1.0
 opencv-python==4.1.2.30
